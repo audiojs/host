@@ -1,0 +1,31 @@
+{
+  "name": "@audio/host-vst",
+  "version": "0.1.0",
+  "description": "VST3 plugin host for audiojs",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "gypfile": true,
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "test": "node test.js"
+  },
+  "files": ["index.js", "index.d.ts", "src/", "native/", "binding.gyp"],
+  "optionalDependencies": {
+    "@audio/host-vst-darwin-arm64": ">=0.1.0",
+    "@audio/host-vst-darwin-x64": ">=0.1.0",
+    "@audio/host-vst-linux-x64": ">=0.1.0",
+    "@audio/host-vst-linux-arm64": ">=0.1.0",
+    "@audio/host-vst-win32-x64": ">=0.1.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "tst": "^9.4.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@audio/host-vst-win32-x64",
+  "version": "0.1.0",
+  "description": "@audio/host-vst native addon for win32-x64",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/audiojs/audio-host",
+    "directory": "packages/host-vst-win32-x64"
+  },
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "main": "host_vst.node",
+  "files": ["host_vst.node"],
+  "publishConfig": { "access": "public" }
+}

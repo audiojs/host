@@ -1,0 +1,16 @@
+{
+  "name": "@audio/host-vst-linux-arm64",
+  "version": "0.1.0",
+  "description": "@audio/host-vst native addon for linux-arm64",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/audiojs/audio-host",
+    "directory": "packages/host-vst-linux-arm64"
+  },
+  "os": ["linux"],
+  "cpu": ["arm64"],
+  "main": "host_vst.node",
+  "files": ["host_vst.node"],
+  "publishConfig": { "access": "public" }
+}

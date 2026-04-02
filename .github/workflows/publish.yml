@@ -1,0 +1,106 @@
+name: publish
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build-vst:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest,    pkg: host-vst-darwin-arm64, node: host_vst.node }
+          - { os: macos-latest,    pkg: host-vst-darwin-x64,   node: host_vst.node, gyp_args: --arch=x64 }
+          - { os: ubuntu-latest,   pkg: host-vst-linux-x64,    node: host_vst.node }
+          - { os: ubuntu-24.04-arm, pkg: host-vst-linux-arm64, node: host_vst.node }
+          - { os: windows-latest,  pkg: host-vst-win32-x64,    node: host_vst.node }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts
+        working-directory: packages/host-vst
+      - run: npx node-gyp@latest rebuild ${{ matrix.gyp_args }}
+        working-directory: packages/host-vst
+      - run: cp packages/host-vst/build/Release/${{ matrix.node }} packages/${{ matrix.pkg }}/${{ matrix.node }}
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkg }}
+          path: packages/${{ matrix.pkg }}/${{ matrix.node }}
+
+  build-clap:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest,    pkg: host-clap-darwin-arm64, node: host_clap.node }
+          - { os: macos-latest,    pkg: host-clap-darwin-x64,   node: host_clap.node, gyp_args: --arch=x64 }
+          - { os: ubuntu-latest,   pkg: host-clap-linux-x64,    node: host_clap.node }
+          - { os: ubuntu-24.04-arm, pkg: host-clap-linux-arm64, node: host_clap.node }
+          - { os: windows-latest,  pkg: host-clap-win32-x64,    node: host_clap.node }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts
+        working-directory: packages/host-clap
+      - run: npx node-gyp@latest rebuild ${{ matrix.gyp_args }}
+        working-directory: packages/host-clap
+      - run: cp packages/host-clap/build/Release/${{ matrix.node }} packages/${{ matrix.pkg }}/${{ matrix.node }}
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.pkg }}
+          path: packages/${{ matrix.pkg }}/${{ matrix.node }}
+
+  publish:
+    needs: [build-vst, build-clap]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Download all platform binaries
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # Copy binaries into platform packages
+      - run: |
+          for dir in artifacts/host-*; do
+            pkg=$(basename "$dir")
+            cp "$dir"/*.node "packages/$pkg/"
+            echo "copied binary → packages/$pkg/"
+          done
+        shell: bash
+
+      # Publish each platform package
+      - run: |
+          for dir in packages/host-vst-* packages/host-clap-*; do
+            [ -f "$dir"/*.node ] || continue
+            echo "publishing $(basename $dir)..."
+            cd "$dir" && npm publish --access public || true
+            cd -
+          done
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Publish main packages
+      - run: cd packages/host-vst && npm publish --access public || true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: cd packages/host-clap && npm publish --access public || true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

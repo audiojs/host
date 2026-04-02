@@ -1,0 +1,43 @@
+name: test
+on: [push, pull_request]
+
+jobs:
+  host-vst:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: packages/host-vst
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --ignore-scripts --no-optional
+      - run: npx node-gyp@latest rebuild
+
+  host-clap:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: packages/host-clap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --ignore-scripts --no-optional
+      - run: npx node-gyp@latest rebuild
+      - run: cc -shared -o test-plugin/gain.clap test-plugin/gain.c -std=c99 -O2
+        if: runner.os != 'Windows'
+      - run: npm test
+        if: runner.os != 'Windows'

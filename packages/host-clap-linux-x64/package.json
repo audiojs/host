@@ -1,0 +1,16 @@
+{
+  "name": "@audio/host-clap-linux-x64",
+  "version": "0.1.0",
+  "description": "@audio/host-clap native addon for linux-x64",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/audiojs/audio-host",
+    "directory": "packages/host-clap-linux-x64"
+  },
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "main": "host_clap.node",
+  "files": ["host_clap.node"],
+  "publishConfig": { "access": "public" }
+}
