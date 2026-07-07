@@ -1,11 +1,11 @@
-# audio-host
+# @audio/host
 
 > Load any audio plugin. Process any audio. No DAW required.
 
 Host VST3 and CLAP plugins from JavaScript — as native modules or [Web Audio](https://github.com/audiojs/web-audio-api) nodes. Format is transparent: point at a file, get audio out. Part of [audiojs](https://github.com/audiojs).
 
 ```js
-import { load } from 'audio-host'
+import { load } from '@audio/host'
 
 const reverb = load('reverb.vst3')
 const gain = load('gain.clap')
@@ -15,7 +15,7 @@ const output = reverb.processAll([left, right])
 
 ## Features
 
-- **Format-transparent** — `audio-host` detects `.vst3` / `.clap` and routes to the right backend
+- **Format-transparent** — `@audio/host` detects `.vst3` / `.clap` and routes to the right backend
 - **AudioWorklet** — register any plugin as `AudioWorkletProcessor`, chain with other nodes
 - **Zero config** — point at a plugin file, get audio out
 - **Parameters** — enumerate, read, write plugin parameters
@@ -26,7 +26,7 @@ const output = reverb.processAll([left, right])
 ## Install
 
 ```sh
-npm install audio-host         # universal — installs available format hosts
+npm install @audio/host         # universal — installs available format hosts
 ```
 
 Or install format hosts individually:
@@ -43,7 +43,7 @@ Prebuilt native binaries install automatically for your platform. Falls back to 
 ### Discover plugins
 
 ```js
-import { scan } from 'audio-host'
+import { scan } from '@audio/host'
 
 const plugins = scan()
 // [
@@ -61,7 +61,7 @@ Scan probes each plugin in a **subprocess** — a crashed or misbehaving plugin 
 ### Load and process
 
 ```js
-import { load } from 'audio-host'
+import { load } from '@audio/host'
 
 const plugin = load('/path/to/plugin.vst3', {
   sampleRate: 44100,  // default
@@ -97,7 +97,7 @@ Any plugin as a standard `AudioWorkletNode`:
 
 ```js
 import { AudioContext, AudioWorkletNode, AudioWorkletProcessor } from 'web-audio-api'
-import { register } from 'audio-host'
+import { register } from '@audio/host'
 
 const ctx = new AudioContext()
 
@@ -116,9 +116,9 @@ src.start()
 
 ```js
 import { readFileSync } from 'fs'
-import decode from 'audio-decode'
-import speaker from 'audio-speaker'
-import { load } from 'audio-host'
+import decode from '@audio/decode'
+import speaker from '@audio/speaker'
+import { load } from '@audio/host'
 
 const audio = await decode(readFileSync('input.wav'))
 const plugin = load('plugin.vst3', { sampleRate: audio.sampleRate })
@@ -138,7 +138,7 @@ write(buf, () => write.flush(() => write.close()))
 
 | Package | Description |
 |---------|-------------|
-| `audio-host` | Universal entry — auto-detects format, routes to installed host |
+| `@audio/host` | Universal entry — auto-detects format, routes to installed host |
 | `@audio/host-vst` | VST3 host (C++) |
 | `@audio/host-clap` | CLAP host (C) |
 
