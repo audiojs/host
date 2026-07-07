@@ -21,12 +21,12 @@ async function importFrom(...paths) {
 }
 
 const decode = (await importFrom(
-  '/Users/div/projects/web-audio-api/node_modules/audio-decode/audio-decode.js',
+  '/Users/div/projects/@audio/decode/index.js',
   'audio-decode'
 )).default
 
 const speaker = (await importFrom(
-  '/Users/div/projects/audio-speaker/index.js',
+  '/Users/div/projects/@audio/speaker/index.js',
   'audio-speaker'
 )).default
 
