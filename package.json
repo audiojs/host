@@ -1,5 +1,9 @@
 {
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/audio-host",
+    "packages/host-vst",
+    "packages/host-clap"
+  ]
 }
