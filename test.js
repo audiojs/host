@@ -21,7 +21,7 @@ async function importFrom(...paths) {
 }
 
 const decode = (await importFrom(
-  '/Users/div/projects/@audio/decode/index.js',
+  '/Users/div/projects/@audio/decode/audio-decode.js',
   'audio-decode'
 )).default
 
