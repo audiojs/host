@@ -16,7 +16,13 @@
     "build": "node-gyp rebuild",
     "test": "node test.js"
   },
-  "files": ["index.js", "index.d.ts", "src/", "native/", "binding.gyp"],
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/",
+    "native/",
+    "binding.gyp"
+  ],
   "optionalDependencies": {
     "@audio/host-clap-darwin-arm64": ">=0.1.0",
     "@audio/host-clap-darwin-x64": ">=0.1.0",
@@ -27,5 +33,8 @@
   "license": "MIT",
   "devDependencies": {
     "tst": "^9.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

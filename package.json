@@ -5,5 +5,8 @@
     "packages/host",
     "packages/host-vst",
     "packages/host-clap"
-  ]
+  ],
+  "scripts": {
+    "test": "node test.js"
+  }
 }
