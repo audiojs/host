@@ -1,0 +1,31 @@
+{
+  "name": "@audio/host",
+  "version": "0.1.0",
+  "description": "Universal audio plugin host — VST3, CLAP, and more",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "optionalDependencies": {
+    "@audio/host-vst": ">=0.1.0",
+    "@audio/host-clap": ">=0.1.0"
+  },
+  "license": "MIT",
+  "author": "Dmitry Iv. <dfcreative@gmail.com>",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/audiojs/audio-host.git",
+    "directory": "packages/host"
+  }
+}

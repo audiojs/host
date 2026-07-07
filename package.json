@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/audio-host",
+    "packages/host",
     "packages/host-vst",
     "packages/host-clap"
   ]
