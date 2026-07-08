@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/audiojs/audio-host",
+    "url": "https://github.com/audiojs/host",
     "directory": "packages/host-vst-darwin-arm64"
   },
   "os": ["darwin"],

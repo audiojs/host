@@ -42,7 +42,7 @@ static void host_noop(const clap_host_t* h) { (void)h; }
 static const clap_host_t s_host = {
   CLAP_VERSION_INIT,
   NULL,
-  "audio-host", "audiojs", "https://github.com/audiojs/audio-host", "0.1.0",
+  "audio-host", "audiojs", "https://github.com/audiojs/host", "0.1.0",
   host_get_ext, host_noop, host_noop, host_noop
 };
 
