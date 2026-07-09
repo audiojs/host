@@ -8,9 +8,18 @@
     "url": "https://github.com/audiojs/host",
     "directory": "packages/host-clap-win32-x64"
   },
-  "os": ["win32"],
-  "cpu": ["x64"],
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "main": "host_clap.node",
-  "files": ["host_clap.node"],
-  "publishConfig": { "access": "public" }
+  "files": [
+    "host_clap.node"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": true
 }

@@ -8,9 +8,18 @@
     "url": "https://github.com/audiojs/host",
     "directory": "packages/host-vst-win32-x64"
   },
-  "os": ["win32"],
-  "cpu": ["x64"],
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "main": "host_vst.node",
-  "files": ["host_vst.node"],
-  "publishConfig": { "access": "public" }
+  "files": [
+    "host_vst.node"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": true
 }

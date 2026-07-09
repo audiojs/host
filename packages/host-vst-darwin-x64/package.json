@@ -8,9 +8,18 @@
     "url": "https://github.com/audiojs/host",
     "directory": "packages/host-vst-darwin-x64"
   },
-  "os": ["darwin"],
-  "cpu": ["x64"],
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "main": "host_vst.node",
-  "files": ["host_vst.node"],
-  "publishConfig": { "access": "public" }
+  "files": [
+    "host_vst.node"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": true
 }

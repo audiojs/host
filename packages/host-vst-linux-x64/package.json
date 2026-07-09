@@ -8,9 +8,18 @@
     "url": "https://github.com/audiojs/host",
     "directory": "packages/host-vst-linux-x64"
   },
-  "os": ["linux"],
-  "cpu": ["x64"],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "main": "host_vst.node",
-  "files": ["host_vst.node"],
-  "publishConfig": { "access": "public" }
+  "files": [
+    "host_vst.node"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": true
 }
