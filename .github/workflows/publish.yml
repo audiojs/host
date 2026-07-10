@@ -23,7 +23,7 @@ jobs:
           node-version: 22
       - run: npm install --ignore-scripts
         working-directory: packages/host-vst
-      - run: npx node-gyp@11 rebuild ${{ matrix.gyp_args }}
+      - run: npx node-gyp@latest rebuild ${{ matrix.gyp_args }}
         working-directory: packages/host-vst
       - run: cp packages/host-vst/build/Release/${{ matrix.node }} packages/${{ matrix.pkg }}/${{ matrix.node }}
         shell: bash
@@ -50,7 +50,7 @@ jobs:
           node-version: 22
       - run: npm install --ignore-scripts
         working-directory: packages/host-clap
-      - run: npx node-gyp@11 rebuild ${{ matrix.gyp_args }}
+      - run: npx node-gyp@latest rebuild ${{ matrix.gyp_args }}
         working-directory: packages/host-clap
       - run: cp packages/host-clap/build/Release/${{ matrix.node }} packages/${{ matrix.pkg }}/${{ matrix.node }}
         shell: bash
