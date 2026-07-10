@@ -36,5 +36,14 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/audiojs/host.git",
+    "directory": "packages/host-vst"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": false
 }

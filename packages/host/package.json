@@ -31,5 +31,9 @@
     "type": "git",
     "url": "git+https://github.com/audiojs/host.git",
     "directory": "packages/host"
-  }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": false
 }
