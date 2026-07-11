@@ -23,7 +23,13 @@
   static const char* lib_error(void) { return dlerror(); }
 #endif
 
-static _Thread_local char s_error[512] = {0};
+/* MSVC's C compiler has no _Thread_local (C11); it spells it __declspec(thread) */
+#if defined(_MSC_VER)
+#  define HOST_THREAD_LOCAL __declspec(thread)
+#else
+#  define HOST_THREAD_LOCAL _Thread_local
+#endif
+static HOST_THREAD_LOCAL char s_error[512] = {0};
 
 /* --- Empty events --- */
 
