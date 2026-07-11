@@ -42,7 +42,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm install --ignore-scripts --no-optional
-      - run: npx node-gyp@11 rebuild
+      - run: npx node-gyp@${{ matrix.node >= 22 && 'latest' || '11' }} rebuild
       - run: cc -shared -o test-plugin/gain.clap test-plugin/gain.c -std=c99 -O2
         if: runner.os != 'Windows'
       - run: npm test
