@@ -1,6 +1,6 @@
 {
   "name": "@audio/host-vst",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "VST3 plugin host for audiojs",
   "type": "module",
   "main": "./index.js",
@@ -45,5 +45,6 @@
   "engines": {
     "node": ">=18"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "funding": "https://github.com/sponsors/audiojs"
 }

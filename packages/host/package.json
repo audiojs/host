@@ -1,6 +1,6 @@
 {
   "name": "@audio/host",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Universal audio plugin host — VST3, CLAP, and more",
   "type": "module",
   "main": "./index.js",
@@ -35,5 +35,6 @@
   "engines": {
     "node": ">=18"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "funding": "https://github.com/sponsors/audiojs"
 }
