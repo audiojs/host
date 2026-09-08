@@ -83,6 +83,13 @@ plugin.close()
 
 ### Parameters
 
+VST3 `getParam`/`setParam` values are normalized to 0–1; descriptor `min`/`max`
+are in plugin units. `setParam` updates the controller immediately and sends
+the latest value to the processor at the next block boundary. Multiple writes
+to the same parameter before processing coalesce. Sample-offset scheduling
+is not exposed by this API.
+
+
 ```js
 const params = plugin.params
 // [{ id: 84, name: 'Threshold', min: 0, max: 1, defaultValue: 0 }, ...]

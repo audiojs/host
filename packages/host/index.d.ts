@@ -6,8 +6,10 @@ export interface Plugin {
   /** Parameter descriptors as reported by the plugin. */
   readonly params: ParamInfo[]
   getParam(id: number): number
-  /** Process one block: planar bus arrays, in place into outputs. */
-  process(inputs: Float32Array[][], outputs: Float32Array[][]): void
+  /** VST3: normalized 0..1 value, applied at the next block boundary. */
+  setParam(id: number, value: number): void
+  /** Process one block: planar channel arrays, in place into outputs. */
+  process(inputs: Float32Array[] | null, outputs: Float32Array[]): void
   /** Convenience: run whole channel data through block-wise processing. */
   processAll(channels: Float32Array[]): Float32Array[]
   close(): void
@@ -17,7 +19,7 @@ export interface ParamInfo {
   name: string
   min: number
   max: number
-  default: number
+  defaultValue: number
   [extra: string]: unknown
 }
 export interface LoadOptions { sampleRate?: number, channels?: number, blockSize?: number }

@@ -53,6 +53,8 @@ static inline bool tuid_match(const TUID a, uint32_t l1, uint32_t l2, uint32_t l
 #define UID_IEditController   0xDCD7BBE3, 0x7742448D, 0xA874AACC, 0x979C759E
 #define UID_IConnectionPoint  0x70A4156F, 0x6E6E4026, 0x989148BF, 0xAA60D8D1
 #define UID_IHostApplication  0x58E595CC, 0xDB2D4369, 0xA2BF7201, 0x1B2B26B2
+#define UID_IParamValueQueue   0x01263A18, 0xED074F6F, 0x98C9D356, 0x4686F9BA
+#define UID_IParameterChanges  0xA4779663, 0x0BB64A56, 0xB44384A8, 0x466FEB9D
 #define UID_IBStream          0xC3BF6EA2, 0x30994523, 0x9124FE83, 0x0C727026
 
 /* --- Base interfaces --- */
@@ -121,6 +123,22 @@ enum BusDirections { kInput = 0, kOutput = 1 };
 enum { kSample32 = 0, kSample64 = 1, kRealtime = 0 };
 typedef uint32 ParamID;
 typedef double ParamValue;
+
+// vst3_pluginterfaces/vst/ivstparameterchanges.h: host-owned per-block queues.
+class IParamValueQueue : public FUnknown {
+public:
+  virtual ParamID getParameterId() = 0;
+  virtual int32 getPointCount() = 0;
+  virtual tresult getPoint(int32 index, int32& sampleOffset, ParamValue& value) = 0;
+  virtual tresult addPoint(int32 sampleOffset, ParamValue value, int32& index) = 0;
+};
+
+class IParameterChanges : public FUnknown {
+public:
+  virtual int32 getParameterCount() = 0;
+  virtual IParamValueQueue* getParameterData(int32 index) = 0;
+  virtual IParamValueQueue* addParameterData(const ParamID& id, int32& index) = 0;
+};
 
 struct BusInfo {
   int32 mediaType;

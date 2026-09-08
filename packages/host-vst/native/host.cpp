@@ -3,6 +3,9 @@
  */
 #include "vst3.h"
 #include "host.h"
+#include "params.h"
+#include <cmath>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cstring>
@@ -122,6 +125,7 @@ struct vst3_plugin {
   IAudioProcessor* processor;
   IEditController* controller;
   bool ctrlSeparate;
+  ParameterChanges changes;
   HostContext* ctx;
   int32 inCh, outCh;
   double sampleRate;
@@ -312,7 +316,10 @@ void vst3_close(vst3_plugin_t* handle) {
 
   if (p->processor) { p->processor->setProcessing(false); p->processor->release(); p->processor = nullptr; }
   if (p->component) { p->component->setActive(false); p->component->terminate(); p->component->release(); p->component = nullptr; }
-  if (p->controller && p->ctrlSeparate) { p->controller->terminate(); p->controller->release(); }
+  if (p->controller) {
+    if (p->ctrlSeparate) p->controller->terminate();
+    p->controller->release();
+  }
   p->controller = nullptr;
   if (p->factory) { p->factory->release(); p->factory = nullptr; }
 
@@ -351,12 +358,13 @@ void vst3_process(vst3_plugin_t* handle, float** inputs, float** outputs, int nu
   data.numOutputs = 1;
   data.inputs = inputs ? &inBus : nullptr;
   data.outputs = &outBus;
-  data.inputParameterChanges = nullptr;
+  data.inputParameterChanges = p->changes.getParameterCount() ? &p->changes : nullptr;
   data.outputParameterChanges = nullptr;
   data.inputEvents = nullptr;
   data.outputEvents = nullptr;
 
   p->processor->process(data);
+  p->changes.clear();
 }
 
 const char* vst3_get_name(vst3_plugin_t* h) { return h ? ((vst3_plugin*)h)->name : ""; }
@@ -393,7 +401,10 @@ double vst3_get_param(vst3_plugin_t* h, uint32_t id) {
 
 void vst3_set_param(vst3_plugin_t* h, uint32_t id, double value) {
   auto* p = (vst3_plugin*)h;
-  if (p && p->controller) p->controller->setParamNormalized(id, value);
+  if (!p || !p->controller || !std::isfinite(value)) return;
+  value = std::clamp(value, 0.0, 1.0);
+  if (p->controller->setParamNormalized(id, value) == kResultOk)
+    p->changes.set(id, value);
 }
 
 int vst3_get_state(vst3_plugin_t* h, void** data, int* size) {

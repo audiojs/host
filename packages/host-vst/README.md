@@ -10,3 +10,7 @@ plugin.close()
 ```
 
 Part of [@audio/host](https://github.com/audiojs/host).
+
+VST3 `setParam(id, value)` uses normalized 0–1 values and applies the latest
+value at the next processing block boundary. Sample-offset scheduling is not
+exposed by this API.
