@@ -14,3 +14,8 @@ Part of [@audio/host](https://github.com/audiojs/host).
 VST3 `setParam(id, value)` uses normalized 0–1 values and applies the latest
 value at the next processing block boundary. Sample-offset scheduling is not
 exposed by this API.
+
+`process(inputs, outputs)` accepts separate input/output channel counts; all
+channels must be equally sized `Float32Array` buffers (up to eight per bus).
+`processAll(inputs)` allocates the plugin's reported output channels and passes
+the final short block at its actual length, preserving state across calls.

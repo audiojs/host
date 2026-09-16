@@ -23,6 +23,8 @@ typedef struct {
 vst3_plugin_t* vst3_open(const char* path, double sampleRate, int channels, int blockSize);
 void vst3_close(vst3_plugin_t* handle);  /* idempotent deactivate */
 void vst3_destroy(vst3_plugin_t* handle); /* close + free */
+/* Independent channel counts for asymmetric buses. */
+void vst3_process_io(vst3_plugin_t* handle, float** inputs, int inputChannels, float** outputs, int outputChannels, int numSamples);
 void vst3_process(vst3_plugin_t* handle, float** inputs, float** outputs, int numChannels, int numSamples);
 
 const char* vst3_get_name(vst3_plugin_t* handle);

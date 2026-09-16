@@ -136,51 +136,51 @@ static napi_value node_setParam(napi_env env, napi_callback_info info) {
   return NULL;
 }
 
-/* process(handle, inputs, outputs) — inputs/outputs are arrays of Float32Array */
+/* process(handle, inputs, outputs) — planar Float32 buffers of equal length. */
 static napi_value node_process(napi_env env, napi_callback_info info) {
   size_t argc = 3; napi_value argv[3];
-  napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
-  vst3_plugin_t* p; napi_get_value_external(env, argv[0], (void**)&p);
-
-  float* inPtrs[8] = {};
-  float* outPtrs[8] = {};
-  uint32_t numCh = 0;
-  size_t numSamples = 0;
-
-  /* Extract input channel pointers */
-  bool hasInputs = false;
-  napi_valuetype inputType;
-  napi_typeof(env, argv[1], &inputType);
-  if (inputType != napi_null && inputType != napi_undefined) {
-    hasInputs = true;
-    napi_get_array_length(env, argv[1], &numCh);
-    for (uint32_t i = 0; i < numCh && i < 8; i++) {
-      napi_value el; napi_get_element(env, argv[1], i, &el);
-      void* data; size_t len;
-      napi_get_typedarray_info(env, el, NULL, &len, &data, NULL, NULL);
-      inPtrs[i] = (float*)data;
-      if (i == 0) numSamples = len;
+  NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, NULL, NULL));
+  if (argc != 3) {
+    napi_throw_type_error(env, NULL, "process requires input and output arrays");
+    return NULL;
+  }
+  vst3_plugin_t* p;
+  NAPI_CALL(env, napi_get_value_external(env, argv[0], (void**)&p));
+  float* ptrs[2][8] = {};
+  uint32_t count[2] = {};
+  size_t samples = 0;
+  bool haveSamples = false;
+  for (int bus = 0; bus < 2; bus++) {
+    napi_valuetype kind;
+    NAPI_CALL(env, napi_typeof(env, argv[bus + 1], &kind));
+    if (bus == 0 && (kind == napi_null || kind == napi_undefined)) continue;
+    bool array;
+    NAPI_CALL(env, napi_is_array(env, argv[bus + 1], &array));
+    if (!array) {
+      napi_throw_type_error(env, NULL, "channels must be an array of Float32Array");
+      return NULL;
+    }
+    NAPI_CALL(env, napi_get_array_length(env, argv[bus + 1], &count[bus]));
+    if (count[bus] > 8 || (bus == 1 && count[bus] == 0)) {
+      napi_throw_range_error(env, NULL, "expected at most 8 channels and at least one output");
+      return NULL;
+    }
+    for (uint32_t i = 0; i < count[bus]; i++) {
+      napi_value el; void* data; size_t len; napi_typedarray_type type;
+      NAPI_CALL(env, napi_get_element(env, argv[bus + 1], i, &el));
+      if (napi_get_typedarray_info(env, el, &type, &len, &data, NULL, NULL) != napi_ok || type != napi_float32_array) {
+        napi_throw_type_error(env, NULL, "channels must be Float32Array");
+        return NULL;
+      }
+      if (len > INT32_MAX || (haveSamples && len != samples)) {
+        napi_throw_range_error(env, NULL, "channel lengths must match and fit i32");
+        return NULL;
+      }
+      samples = len; haveSamples = true;
+      ptrs[bus][i] = (float*)data;
     }
   }
-
-  /* Extract output channel pointers */
-  uint32_t outCh;
-  napi_get_array_length(env, argv[2], &outCh);
-  for (uint32_t i = 0; i < outCh && i < 8; i++) {
-    napi_value el; napi_get_element(env, argv[2], i, &el);
-    void* data;
-    napi_get_typedarray_info(env, el, NULL, NULL, &data, NULL, NULL);
-    outPtrs[i] = (float*)data;
-  }
-  if (!numCh) numCh = outCh;
-  if (!numSamples) {
-    /* Get length from output if no input */
-    napi_value el; napi_get_element(env, argv[2], 0, &el);
-    size_t len; napi_get_typedarray_info(env, el, NULL, &len, NULL, NULL, NULL);
-    numSamples = len;
-  }
-
-  vst3_process(p, hasInputs ? inPtrs : NULL, outPtrs, numCh, (int)numSamples);
+  vst3_process_io(p, count[0] ? ptrs[0] : NULL, count[0], ptrs[1], count[1], (int)samples);
   return NULL;
 }
 

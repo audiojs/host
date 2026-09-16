@@ -138,30 +138,15 @@ function scanDir(dirs, ext, format) {
 }
 
 function processBlocks(addon, handle, channels, blockSize) {
-  const len = channels[0].length, numCh = channels.length
-  const out = Array.from({ length: numCh }, () => new Float32Array(len))
-
-  const inBlock = Array.from({ length: numCh }, () => new Float32Array(blockSize))
-  const outBlock = Array.from({ length: numCh }, () => new Float32Array(blockSize))
-
+  if (!Array.isArray(channels) || !channels.length ||
+    channels.some(c => !(c instanceof Float32Array)))
+    throw new TypeError('channels must be a nonempty array of Float32Array')
+  const len = channels[0].length
+  if (channels.some(c => c.length !== len)) throw new RangeError('channel lengths must match')
+  const out = Array.from({ length: addon.getChannels(handle, 1) }, () => new Float32Array(len))
   for (let off = 0; off < len; off += blockSize) {
-    const n = Math.min(blockSize, len - off)
-    if (n === blockSize) {
-      const inSub = [], outSub = []
-      for (let c = 0; c < numCh; c++) {
-        inSub[c] = channels[c].subarray(off, off + blockSize)
-        outSub[c] = out[c].subarray(off, off + blockSize)
-      }
-      addon.process(handle, inSub, outSub)
-    } else {
-      for (let c = 0; c < numCh; c++) {
-        inBlock[c].fill(0)
-        inBlock[c].set(channels[c].subarray(off, off + n))
-        outBlock[c].fill(0)
-      }
-      addon.process(handle, inBlock, outBlock)
-      for (let c = 0; c < numCh; c++) out[c].set(outBlock[c].subarray(0, n), off)
-    }
+    const end = Math.min(len, off + blockSize)
+    addon.process(handle, channels.map(c => c.subarray(off, end)), out.map(c => c.subarray(off, end)))
   }
   return out
 }

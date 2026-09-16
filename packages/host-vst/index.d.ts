@@ -3,13 +3,15 @@
 export interface Plugin {
   readonly name: string
   readonly vendor: string
+  readonly inputChannels: number
+  readonly outputChannels: number
   blockSize: number
   /** Parameter descriptors as reported by the plugin. */
   readonly params: ParamInfo[]
   getParam(id: number): number
   /** Normalized 0..1 value, applied at the next processing block boundary. */
   setParam(id: number, value: number): void
-  /** Process one block: planar channel arrays, in place into outputs. */
+  /** Process one block: input/output counts may differ; all buffers have the same length. */
   process(inputs: Float32Array[] | null, outputs: Float32Array[]): void
   /** Convenience: run whole channel data through block-wise processing. */
   processAll(channels: Float32Array[]): Float32Array[]

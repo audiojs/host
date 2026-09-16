@@ -342,22 +342,26 @@ void vst3_destroy(vst3_plugin_t* handle) {
 }
 
 void vst3_process(vst3_plugin_t* handle, float** inputs, float** outputs, int numChannels, int numSamples) {
+  vst3_process_io(handle, inputs, inputs ? numChannels : 0, outputs, numChannels, numSamples);
+}
+
+void vst3_process_io(vst3_plugin_t* handle, float** inputs, int inputChannels, float** outputs, int outputChannels, int numSamples) {
   auto* p = (vst3_plugin*)handle;
   if (!p || !p->processor) return;
 
-  AudioBusBuffers inBus = { numChannels, 0, {} };
+  AudioBusBuffers inBus = { inputChannels, 0, {} };
   inBus.channelBuffers32 = inputs;
-  AudioBusBuffers outBus = { numChannels, 0, {} };
+  AudioBusBuffers outBus = { outputChannels, 0, {} };
   outBus.channelBuffers32 = outputs;
 
   ProcessData data = {};
   data.processMode = kRealtime;
   data.symbolicSampleSize = kSample32;
   data.numSamples = numSamples;
-  data.numInputs = inputs ? 1 : 0;
-  data.numOutputs = 1;
-  data.inputs = inputs ? &inBus : nullptr;
-  data.outputs = &outBus;
+  data.numInputs = inputChannels ? 1 : 0;
+  data.numOutputs = outputChannels ? 1 : 0;
+  data.inputs = inputChannels ? &inBus : nullptr;
+  data.outputs = outputChannels ? &outBus : nullptr;
   data.inputParameterChanges = p->changes.getParameterCount() ? &p->changes : nullptr;
   data.outputParameterChanges = nullptr;
   data.inputEvents = nullptr;
